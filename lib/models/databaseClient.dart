@@ -4,6 +4,7 @@ import 'package:wish_list/models/item.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:wish_list/models/article.dart';
 
 class DatabaseClient {
 
@@ -34,6 +35,17 @@ class DatabaseClient {
     CREATE TABLE item (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL)
+    """
+    );
+
+    await db.execute("""
+    CREATE TABLE article (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    item INTEGER,
+    price TEXT,
+    store TEXT,
+    image TEXT)
     """);
   }
 
@@ -54,7 +66,7 @@ class DatabaseClient {
   }
 
   /* MISE A JOUR OU INSERER DES DONNEES */
-
+  // Item
   Future<Item> upsertItem(Item item) async {
     Database myDatabase = await database;
     if (item.id == null) {
@@ -64,16 +76,25 @@ class DatabaseClient {
     }
     return item;
   }
+  // Article
+  Future<Article> upsertArticle(Article article) async {
+    Database myDatabase = await database;
+    (article.id == null)
+    ? article.id = await myDatabase.insert('article', article.toMap())
+        : await myDatabase.update('article', article.toMap(), where: 'id = ?', whereArgs: [article.id]);
+    return article;
+  }
 
   /* SUPPRESSION DES DONNEES */
 
   Future<int> delete(int id, String table) async {
     Database myDatabase = await database;
+    await myDatabase.delete('article', where: 'item = ?', whereArgs: [id]);
     return await myDatabase.delete(table, where: 'id = ?', whereArgs: [id]);
   }
 
   /* LECTURE DES DONNEES */
-
+  // Item
   Future<List<Item>> allItems() async {
     Database myDatabase = await database;
     List<Map<String, dynamic>> result = await myDatabase.rawQuery("SELECT * FROM item");
@@ -84,5 +105,17 @@ class DatabaseClient {
       items.add(item);
     });
     return items;
+  }
+  // Article
+  Future<List<Article>> allArticles(int item) async {
+    Database myDatabase = await database;
+    List<Map<String, dynamic>> result = await myDatabase.query('article', where: 'item = ?', whereArgs: [item]);
+    List<Article> articles = [];
+    result.forEach((map) {
+      Article article = Article();
+      article.fromMap(map);
+      articles.add(article);
+    });
+    return articles;
   }
 }
