@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:wish_list/models/item.dart';
 import 'package:wish_list/widgets/empty_data.dart';
 import 'package:wish_list/models/databaseClient.dart';
+import 'package:wish_list/widgets/item_details.dart';
 
 class HomeController extends StatefulWidget {
   HomeController({Key key, this.title}) : super(key: key);
@@ -63,6 +64,11 @@ class _HomeControllerState extends State<HomeController> {
                 icon: Icon(Icons.edit),
                 onPressed: (() => add(item)),
               ),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (BuildContext buildContext) {
+                  return ItemDetails(item);
+                }));
+              },
             );
           }
       ),
