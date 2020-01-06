@@ -59,17 +59,22 @@ class _ItemDetailsState extends State<ItemDetails> {
       ? EmptyData()
           : GridView.builder(
         itemCount: articles.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 1),
           itemBuilder: (context, i) {
             Article article = articles[i];
             return Card(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Text(article.name, textScaleFactor: 1.4,),
-                  (article.image == null)
-                  ? Image.network("https://cdn.pixabay.com/photo/2015/07/15/11/53/woodtype-846089_960_720.jpg")
-                      : Image.file(File(article.image)),
+                  Text(article.name, textScaleFactor: 1.6,),
+                  Container(
+                    height: MediaQuery.of(context).size.height / 2.5,
+                    child: (article.image == null)
+                        ? Image.network(
+                        "https://cdn.pixabay.com/photo/2015/07/15/11/53/woodtype-846089_960_720.jpg",
+                      fit: BoxFit.cover)
+                        : Image.file(File(article.image)),
+                  ),
                   Text((article.price == null)? 'No price': "Price: ${article.price}"),
                   Text((article.store == null)? 'No store': "Store: ${article.price}"),
                 ],
