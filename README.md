@@ -1,6 +1,6 @@
 # wish_list
 
-Flutter app : Wish list
+Flutter app : Wish list using SQLite
 
 ## Getting Started
 
